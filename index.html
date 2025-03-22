@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Go Out With Me?</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: url(images\ 2.jpg);
+            background-size: cover;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            text-align: center;
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            color: black;
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            margin: 5px;
+        }
+        #yes {
+            background-color: #ff4d6d;
+            color: white;
+        }
+        #no {
+            background-color: #ffcccb;
+            color: black;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="step1">
+        <h2>Enter Your Name</h2>
+        <input type="text" id="name" required>
+        <button onclick="nextStep()">Next</button>
+    </div>
+
+    <div class="container hidden" id="step2">
+        <h2>Will You Go Out With Me? ❤️</h2>
+        <div class="buttons">
+            <button id="yes" onclick="showConfirmation()">Yes</button>
+            <button id="no" onclick="nextStep('no')">No</button>
+        </div>
+    </div>
+
+    <div class="container hidden" id="step3">
+        <h2>Are You Sure? 🥺</h2>
+        <div class="buttons">
+            <button id="yes" disabled>Yes</button>
+            <button id="no" onclick="nextStep('noSure')">No</button>
+        </div>
+    </div>
+    <div class="container hidden" id="confirmation">
+        <h2>Thank You for Agreeing to a Date! ❤️</h2>
+        <img src="bugs.jpg" alt="Romantic Image" width="300px">
+        <h3 id="confirmationName"></h3>
+        <button onclick="nextStep('confirmationNext')">Next</button>
+    </div>
+
+    <div class="container hidden" id="step4">
+        <h2>Select the Type of Date</h2>
+        <select id="type" required>
+            <option value="restaurant">Restaurant</option>
+            <option value="movies">Movies</option>
+            <option value="outdoor">Outdoor</option>
+        </select>
+        <button onclick="nextStep()">Next</button>
+    </div>
+
+    <div class="container hidden" id="step5">
+        <h2>Select a Date</h2>
+        <input type="date" id="date" required>
+        <button onclick="submitForm()">Submit</button>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let storedName = "";
+
+        function nextStep(choice = '') {
+            if (currentStep === 1) {
+                storedName = document.getElementById("name").value.trim().toLowerCase();
+                if (!storedName) {
+                    alert("Please enter your name!");
+                    return;
+                }
+                if (!['toni-ann', 'toni ann', 'toniann'].includes(storedName.replace(/[-\s]/g, ''))) {
+                    alert("Sorry, only Toni-Ann can proceed!");
+                    return;
+                }
+            }
+            if (currentStep === 2 && choice === 'no') {
+                currentStep = 3;
+            } else if (currentStep === 3 && choice === 'noSure') {
+                currentStep = 2;
+            } else if (currentStep === 2 && choice === 'yes') {
+                currentStep = 4;
+            } else if (choice === 'confirmationNext') {
+                currentStep = 4;
+            } else {
+                currentStep++;
+            }
+            updateView();
+        }
+
+        function updateView() {
+            document.querySelectorAll(".container").forEach(div => div.classList.add("hidden"));
+            document.getElementById(`step${currentStep}`).classList.remove("hidden");
+        }
+
+        function submitForm() {
+            let date = document.getElementById("date").value;
+            let type = document.getElementById("type").value;
+            
+            if (date && type) {
+                alert(`Yay! Toni-Ann, we are going on a ${type} date on ${date}! 🎉`);
+                sendEmail(date, type);
+            } else {
+                alert("Please select a date and type before submitting!");
+            }
+        }
+
+        function sendEmail(date, type) {
+            let emailBody = `Hey Toni-Ann!\n\nWe have a date planned! 🎉\n\nType: ${type}\nDate: ${date}\n\nCan't wait! ❤️`;
+            let recipientEmail = prompt("Please enter your email (Toni-Ann)", "");
+            if (recipientEmail) {
+                window.location.href = `mailto:danielburrie17@gmail.com,${recipientEmail}?subject=Our%20Date%20Plan!&body=${encodeURIComponent(emailBody)}`;
+            } else {
+                alert("Email not entered, please try again!");
+            }
+        }
+
+        function showConfirmation() {
+            document.querySelectorAll(".container").forEach(div => div.classList.add("hidden"));
+            document.getElementById("confirmation").classList.remove("hidden");
+            document.getElementById("confirmationName").innerText = ` Toni-Ann! ❤️`;
+        }
+    </script>
+</body>
+</html>
